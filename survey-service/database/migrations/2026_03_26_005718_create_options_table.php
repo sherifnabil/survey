@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('type');
             $table->integer('value');
             $table->foreignId('survey_id');
+            $table->unique(['value', 'survey_id']);
             $table->timestamps();
         });
     }

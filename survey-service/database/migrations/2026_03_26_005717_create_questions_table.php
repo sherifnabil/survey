@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('title');
             $table->string('order');
             $table->foreignId('section_id');
+            $table->unique(['order', 'section_id']);
             $table->timestamps();
         });
     }
