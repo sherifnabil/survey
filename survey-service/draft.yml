@@ -1,0 +1,39 @@
+models:
+  Survey:
+    name: string
+    active: boolean default:true
+    description: nullable text
+    relationships:
+      hasMany: Section, Option, Response
+  
+  Section:
+    name: string
+    order: numeric
+    relationships:
+      belongsTo: Survey
+      hasMany: Question
+  
+  Question:
+    title: string
+    order: numeric
+    relationships:
+      belongsTo: Section
+      hasMany: Answer
+
+
+  Option:
+    name: string
+    type: string
+    value: integer
+    relationships:
+      belongsTo: Survey
+      hasMany: Answer
+
+  Response:
+    relationships:
+      belongsTo: User, Survey
+      hasMany: Answer
+
+  Answer:
+    relationships:
+      belongsTo: Response, Option, Question
