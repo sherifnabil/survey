@@ -15,7 +15,7 @@ class OptionFactory extends Factory
         return [
             'name' => fake()->name(),
             'type' => fake()->word(),
-            'value' => fake()->numberBetween(-10000, 10000),
+            'value' => fake()->numberBetween(0, 3),
             'survey_id' => Survey::factory(),
         ];
     }

@@ -14,7 +14,7 @@ class QuestionFactory extends Factory
     {
         return [
             'title' => fake()->sentence(4),
-            'order' => fake()->word(),
+            'order' => fake()->numberBetween(1, 10),
             'section_id' => Section::factory(),
         ];
     }
