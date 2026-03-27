@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\OptionType;
 use App\Models\Survey;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -14,7 +15,7 @@ class OptionFactory extends Factory
     {
         return [
             'name' => fake()->name(),
-            'type' => fake()->word(),
+            'type' => fake()->randomElement(OptionType::cases())->value,
             'value' => fake()->numberBetween(0, 3),
             'survey_id' => Survey::factory(),
         ];
