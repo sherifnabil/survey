@@ -2,6 +2,7 @@
 
 namespace App\Helpers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\CursorPaginator;
@@ -78,5 +79,18 @@ class ResponseFormatter
     $queryParams['cursor'] = $cursor;
 
     return url()->current() . '?' . http_build_query($queryParams);
+  }
+
+  /**
+   * Format a response for a single item
+   * @param JsonResource $data The data to be returned in the response
+   * @return JsonResponse The formatted response containing the single item data
+   */
+  public static function singleItemResponse(JsonResource $data): JsonResponse
+  {
+    return new JsonResponse(
+      data: $data,
+      status: Response::HTTP_OK,
+    );
   }
 }

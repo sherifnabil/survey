@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SurveyResource extends JsonResource
+class OptionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,10 +17,7 @@ class SurveyResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
-            'sections' => SectionResource::collection($this->whenLoaded('sections')),
-            'options' => OptionResource::collection($this->whenLoaded('options')),
+            'value' => $this->value,
         ];
     }
 }
