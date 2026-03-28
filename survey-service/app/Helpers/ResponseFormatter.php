@@ -40,8 +40,8 @@ class ResponseFormatter
       'data' => $data,
       'pagination' => [
         'per_page' => $paginator->perPage(),
-        'next_url' => $paginator->nextPageUrl(), // base64 encoded cursor
-        'prev_url' => $paginator->previousPageUrl(), // base64 encoded cursor
+        'next_url' => self::generateCursorUrl($paginator->nextCursor()?->encode()),
+        'prev_url' => self::generateCursorUrl($paginator->previousCursor()?->encode()),
         'total' => $total,
         'last_page' => ceil($total / $paginator->perPage()),
         'total' => $total,
@@ -50,5 +50,17 @@ class ResponseFormatter
       'status' => 'success',
       'code' => Response::HTTP_OK,
     ];
+  }
+
+  private static function generateCursorUrl(?string $cursor): ?string
+  {
+    if (!$cursor) {
+      return null;
+    }
+
+    $queryParams = request()->query();
+    $queryParams['cursor'] = $cursor;
+
+    return url()->current() . '?' . http_build_query($queryParams);
   }
 }
