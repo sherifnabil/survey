@@ -14,7 +14,7 @@ readonly class SurveyFilterDTO implements DTO
 
   public static function fromRequest(array $data, array $columns = ['*']): self
   {
-    $activeStatus = strlen($data['active']) == 0 ? null : filter_var($data['active'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+    $activeStatus = (!isset($data['active']) || strlen($data['active']) == 0) ? null : filter_var($data['active'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 
     return new self(
       filters: [
@@ -23,8 +23,9 @@ readonly class SurveyFilterDTO implements DTO
         'active' => $activeStatus,
       ],
       meta: [
-        'perPage' => $data['perPage'] ?? config('app.pagination.perPage'),
-        'page' => $data['page'] ?? config('app.pagination.page'),
+        'perPage' => $data['perPage'] ?? config('response-settings.per_page'),
+        'page' => $data['page'] ?? config('response-settings.page'),
+        'cursor' => $data['cursor'] ?? null,
       ],
       columns: $columns,
     );

@@ -15,10 +15,11 @@ class SurveyService
    */
   public function list(SurveyFilterDTO $dto): Collection|array
   {
-    $data = (new ListAction())->execute($dto);
-    return ResponseFormatter::paginationResponse(
-      SurveyResource::collection($data->items()),
-      $data
+    $action = (new ListAction())->execute($dto);
+    return ResponseFormatter::cursorPaginationResponse(
+      SurveyResource::collection($action['data']->items()),
+      $action['data'],
+      $action['total'],
     );
   }
 
@@ -27,10 +28,11 @@ class SurveyService
    */
   public function minimalList(SurveyFilterDTO $dto): Collection|array
   {
-    $data = (new ListAction())->execute($dto);
-    return ResponseFormatter::paginationResponse(
-      $data->items(),
-      $data
+    $action = (new ListAction())->execute($dto);
+    return ResponseFormatter::cursorPaginationResponse(
+      $action['data']->items(),
+      $action['data'],
+      $action['total']
     );
   }
 }

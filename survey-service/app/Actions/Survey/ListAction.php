@@ -6,16 +6,31 @@ use App\Actions\Action;
 use App\DTOs\DTO;
 use App\DTOs\Survey\SurveyFilterDTO;
 use App\Models\Survey;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class ListAction implements Action
 {
-  public function execute(DTO $dto): LengthAwarePaginator
+  public function execute(DTO $dto): array
   {
-    /** @var SurveyFilterDTO $dto */
-    return Survey::query()
+    /** 
+     * @var SurveyFilterDTO $dto
+     *
+     *  The query is built using the filters and columns specified in the DTO. 
+     *  The total count of records matching the filters is retrieved before applying pagination. 
+     *  The data is then paginated using cursor pagination,
+     *  and both the paginated data and total count are returned in the response. 
+     */
+    $query = Survey::query()
       ->filters($dto->toArray()['filters'])
-      ->select($dto->columns)
-      ->paginate($dto->toArray()['meta']['perPage'], $dto->toArray()['meta']['page']);
+      ->select($dto->columns);
+
+    $total = $query->count();
+
+    $data = $query
+      ->cursorPaginate($dto->toArray()['meta']['perPage']);
+
+    return [
+      'data' => $data,
+      'total' => $total,
+    ];
   }
 }
