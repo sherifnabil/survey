@@ -38,21 +38,37 @@ class ResponseFormatter
   {
     return [
       'data' => $data,
-      'pagination' => [
-        'per_page' => $paginator->perPage(),
-        'next_url' => self::generateCursorUrl($paginator->nextCursor()?->encode()),
-        'prev_url' => self::generateCursorUrl($paginator->previousCursor()?->encode()),
-        'total' => $total,
-        'last_page' => ceil($total / $paginator->perPage()),
-        'total' => $total,
-        'last_page' => $total > 0 ? ceil($total / $paginator->perPage()) : null,
-      ],
+      'pagination' => static::cursorPaginationMeta($paginator, $total),
       'status' => 'success',
       'code' => Response::HTTP_OK,
     ];
   }
 
-  private static function generateCursorUrl(?string $cursor): ?string
+  /**
+   * Generate cursor pagination metadata
+   * @param CursorPaginator $paginator The paginator object containing pagination metadata
+   * @param int $total The total number of items
+   * @return array The generated pagination metadata
+   */
+  private static function cursorPaginationMeta(CursorPaginator $paginator, int $total): array
+  {
+    return [
+      'per_page' => $paginator->perPage(),
+      'next_url' => self::cursorUrl($paginator->nextCursor()?->encode()),
+      'prev_url' => self::cursorUrl($paginator->previousCursor()?->encode()),
+      'total' => $total,
+      'last_page' => ceil($total / $paginator->perPage()),
+      'total' => $total,
+      'last_page' => $total > 0 ? ceil($total / $paginator->perPage()) : null,
+    ];
+  }
+
+  /**
+   * Generate a URL for the next or previous page based on the provided cursor
+   * @param string|null $cursor The cursor value for the next or previous page
+   * @return string|null The generated URL for the next or previous page, or null if
+   */
+  private static function cursorUrl(?string $cursor): ?string
   {
     if (!$cursor) {
       return null;
