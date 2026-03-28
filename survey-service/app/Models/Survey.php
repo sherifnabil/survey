@@ -31,4 +31,20 @@ class Survey extends Model
     {
         return $this->hasMany(Response::class);
     }
+
+    public function scopeFilters($query, array $filters): void
+    {
+        $query->when(
+            !empty($filters['name']),
+            fn($q) => $q->where('name', 'like', '%' . $filters['name'] . '%')
+        )
+            ->when(
+                !empty($filters['description']),
+                fn($q) => $q->where('description', 'like', '%' . $filters['description'] . '%')
+            )
+            ->when(
+                !is_null($filters['active']),
+                fn($q) => $q->where('active', $filters['active'])
+            );
+    }
 }
