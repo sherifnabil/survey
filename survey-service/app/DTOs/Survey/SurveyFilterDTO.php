@@ -2,9 +2,9 @@
 
 namespace App\DTOs\Survey;
 
-use App\DTOs\DTOInterface;
+use App\DTOs\DTO;
 
-readonly class SurveyFilterDTO implements DTOInterface
+readonly class SurveyFilterDTO implements DTO
 {
   public function __construct(
     public array $filters = [],
