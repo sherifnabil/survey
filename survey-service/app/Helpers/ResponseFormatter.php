@@ -86,10 +86,14 @@ class ResponseFormatter
    * @param JsonResource $data The data to be returned in the response
    * @return JsonResponse The formatted response containing the single item data
    */
-  public static function singleItemResponse(JsonResource $data): JsonResponse
+  public static function singleItemResponse(JsonResource|null $data): JsonResponse
   {
     return new JsonResponse(
-      data: $data,
+      data: [
+        'data' => $data,
+        'status' => 'success',
+        'code' => Response::HTTP_OK,
+      ],
       status: Response::HTTP_OK,
     );
   }
