@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Actions\Survey\ListAction;
+use App\DTOs\Survey\SurveyDTO;
 use App\DTOs\Survey\SurveyFilterDTO;
 use App\Helpers\ResponseFormatter;
 use App\Http\Resources\SurveyResource;
@@ -48,5 +49,41 @@ class SurveyService
   {
     $survey = Survey::with(['sections.questions', 'options'])->findOrFail($id);
     return ResponseFormatter::singleItemResponse(new SurveyResource($survey));
+  }
+
+  /**
+   * Create a new survey along with its sections and options
+   * @param SurveyDTO $dto The data transfer object
+   * @return JsonResponse
+   */
+  public function create(SurveyDTO $dto): JsonResponse
+  {
+    $survey = (new \App\Actions\Survey\CreateAction())->execute($dto);
+    return ResponseFormatter::singleItemResponse(new SurveyResource($survey));
+  }
+
+  /**
+   * Update an existing survey along with its sections and options
+   * @param SurveyDTO $dto The data transfer object containing the updated survey information
+   * @param int $id The ID of the survey to update
+   * @return JsonResponse
+   */
+  public function update(SurveyDTO $dto, int $id): JsonResponse
+  {
+    $survey = (new \App\Actions\Survey\UpdateAction())->execute($dto, $id);
+    return ResponseFormatter::singleItemResponse(new SurveyResource($survey));
+  }
+
+  /**
+   * Delete a survey by its ID
+   * @param int $id The ID of the survey to delete
+   * @return JsonResponse
+   */
+  public function delete(int $id): JsonResponse
+  {
+    $survey = Survey::find($id);
+    if ($survey) $survey->delete();
+
+    return ResponseFormatter::singleItemResponse(data: null);
   }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
+use App\DTOs\Survey\SurveyDTO;
 use App\DTOs\Survey\SurveyFilterDTO;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\SurveyRequest;
@@ -32,10 +33,38 @@ class SurveyController extends Controller
     }
 
     /**
+     * Store a newly created resource in storage.
+     */
+    public function store(SurveyRequest $request): JsonResponse
+    {
+        $dto = SurveyDTO::fromRequest($request->validated());
+        return $this->service->create($dto);
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show(int $id): JsonResponse
     {
         return $this->service->getDetails($id);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(SurveyRequest $request, int $id): JsonResponse
+    {
+        $data = $request->validated();
+        $data['id'] = $id; // Ensure the ID is included in the DTO
+        $dto = SurveyDTO::fromRequest($data);
+        return $this->service->update($dto, $id);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(int $id)
+    {
+        return $this->service->delete($id);
     }
 }
