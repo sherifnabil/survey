@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Actions\Survey\CreateAction;
 use App\Actions\Survey\ListAction;
+use App\Actions\Survey\UpdateAction;
 use App\DTOs\Survey\SurveyDTO;
 use App\DTOs\Survey\SurveyFilterDTO;
 use App\Helpers\ResponseFormatter;
@@ -58,7 +60,7 @@ class SurveyService
    */
   public function create(SurveyDTO $dto): JsonResponse
   {
-    $survey = (new \App\Actions\Survey\CreateAction())->execute($dto);
+    $survey = (new CreateAction())->execute($dto);
     return ResponseFormatter::singleItemResponse(new SurveyResource($survey));
   }
 
@@ -70,7 +72,7 @@ class SurveyService
    */
   public function update(SurveyDTO $dto, int $id): JsonResponse
   {
-    $survey = (new \App\Actions\Survey\UpdateAction())->execute($dto, $id);
+    $survey = (new UpdateAction())->execute($dto, $id);
     return ResponseFormatter::singleItemResponse(new SurveyResource($survey));
   }
 
