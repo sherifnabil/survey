@@ -40,7 +40,7 @@ class UpdateAction implements Action
 
       // Create survey options
       $survey->options()->createMany($dto->options);
-      return $survey;
+      return $survey->refresh();
     });
   }
 }

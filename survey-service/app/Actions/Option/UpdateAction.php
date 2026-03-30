@@ -12,10 +12,10 @@ class UpdateAction implements Action
   public function execute(DTO $dto): ?Option
   {
     /** @var OptionDTO $dto */
-    if ($section = Option::findOrFail($dto->id)) {
-      $section->update($dto->toArrayExceptColumns(['survey_id']));
+    if ($option = Option::findOrFail($dto->id)) {
+      $option->update($dto->toArrayExceptColumns(['survey_id']));
     }
 
-    return $section;
+    return $option->refresh();
   }
 }

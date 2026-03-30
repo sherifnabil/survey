@@ -21,6 +21,6 @@ class UpdateAction implements Action
       $section->questions()->createMany($questions);
     }
 
-    return $section;
+    return $section->refresh();
   }
 }
