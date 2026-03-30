@@ -21,12 +21,24 @@ class ResponseFormatter
   {
     return [
       'data' => $data,
+      'pagination' => static::paginationResponseMeta($paginator),
+      'status' => 'success',
+      'code' => Response::HTTP_OK,
+    ];
+  }
+
+  /**
+   * Generate pagination metadata
+   * @param LengthAwarePaginator $paginator The paginator object containing pagination metadata
+   * @return array The generated pagination metadata
+   */
+  private static function paginationResponseMeta(LengthAwarePaginator $paginator): array
+  {
+    return [
       'current_page' => $paginator->currentPage(),
       'last_page' => $paginator->lastPage(),
       'per_page' => $paginator->perPage(),
       'total' => $paginator->total(),
-      'status' => 'success',
-      'code' => Response::HTTP_OK,
     ];
   }
 
