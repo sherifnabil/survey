@@ -22,4 +22,21 @@ class Section extends Model
     {
         return $this->hasMany(Question::class);
     }
+
+    public function scopeFilters($query, array $filters)
+    {
+        $surveyId = $filters['survey_id'] ?? null;
+        $name = $filters['name'] ?? null;
+        $order = $filters['order'] ?? null;
+
+        $query->when($surveyId, function ($query, $surveyId) {
+            $query->where('survey_id', $surveyId);
+        })
+            ->when($name ?? null, function ($query, $name) {
+                $query->where('name', 'like', '%' . $name . '%');
+            })
+            ->when($order ?? null, function ($query, $order) {
+                $query->where('order', $order);
+            });
+    }
 }
