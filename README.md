@@ -4,16 +4,6 @@ A full‑stack survey application built with **Laravel** (backend service) and *
 The backend provides a RESTful API, while the React frontend consumes it to manage surveys, questions, and responses.
 Backend is A modular, scalable Survey Management API built with Laravel using clean architecture patterns (Actions, DTOs, Resources).
 
----
-
-##  Overview
-
-This project provides a RESTful API for managing surveys with a nested structure:
-
-Survey → Sections → Questions → Options
-
-It is designed with separation of concerns and extensibility in mind.
-
 ##  Architecture
 
 ### 🔹 Actions
