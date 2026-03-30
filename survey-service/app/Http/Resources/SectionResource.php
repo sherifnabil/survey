@@ -18,6 +18,7 @@ class SectionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'order' => $this->order,
+            'survey_id' => $this->when(str_contains($request->path(), 'sections'), $this->survey_id),
             'created_at' => $this->created_at->format('Y-m-d H:i:s'),
             'questions' => QuestionResource::collection($this->whenLoaded('questions')),
         ];
