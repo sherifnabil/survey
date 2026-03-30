@@ -46,50 +46,37 @@ Eloquent models with relationships:
 
 ---
 ## Features
-
-- Create, edit, and delete surveys  
-- Add multiple question types (text, multiple choice, etc.)  
-- Collect and analyze survey responses  
-- Pagination for survey lists and results  
-- Responsive UI built with React  
-- RESTful API with Laravel Sanctum for authentication (if implemented)  
+- Create and manage surveys
+- Nested structure:
+  - Survey → Sections → Questions → Options
+- Dynamic question ordering
+- Custom API response formatting
+- Cursor-based / Offset pagination support
+- Clean architecture using:
+  - Actions
+  - DTOs
+  - Resources
+  - Responsive UI built with React  
 
 ## Tech Stack
 
 ### Backend (`survey-service/`)
 - **Laravel** 13 (PHP)  
-- MySQL / SQLite (configurable)  
+- Postgres  
 - Laravel Sanctum for API authentication  
-- API resources and pagination support  
+- API resources and pagination support
+- PHP (Laravel)
+- MySQL
+- RESTful API
+- Laravel Resources
+- DTO Pattern
+- Action Pattern
 
 ### Frontend (`client-react/`)
 - **React.js** 18+  
 - Axios for API calls  
 - React Router for navigation  
 - Tailwind CSS (or other styling – inferred from typical setup)  
-
-## Project Structure
-```shell
-survey/
-├── survey-service/ # Laravel backend API
-│ ├── app/
-│ ├── routes/
-│ ├── database/
-│ └── ...
-└── client-react/ # React frontend
-├── src/
-├── public/
-└── ...
-```
-
-## Prerequisites
-
-- PHP >= 8.1
-- Composer
-- Node.js >= 16 & npm / yarn
-- MySQL (or SQLite for development)
-
-## Setup Instructions
 
 ### 1. Clone the repository
 ```bash
