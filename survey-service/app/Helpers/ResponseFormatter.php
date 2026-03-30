@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\CursorPaginator;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class ResponseFormatter
 {
@@ -86,7 +87,7 @@ class ResponseFormatter
    * @param JsonResource $data The data to be returned in the response
    * @return JsonResponse The formatted response containing the single item data
    */
-  public static function singleItemResponse(JsonResource|null $data): JsonResponse
+  public static function dataResponse(JsonResource|Collection|null $data): JsonResponse
   {
     return new JsonResponse(
       data: [

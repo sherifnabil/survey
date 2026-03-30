@@ -50,7 +50,7 @@ class SurveyService
   public function getDetails(int $id): JsonResponse
   {
     $survey = Survey::with(['sections.questions', 'options'])->findOrFail($id);
-    return ResponseFormatter::singleItemResponse(new SurveyResource($survey));
+    return ResponseFormatter::dataResponse(new SurveyResource($survey));
   }
 
   /**
@@ -61,7 +61,7 @@ class SurveyService
   public function create(SurveyDTO $dto): JsonResponse
   {
     $survey = (new CreateAction())->execute($dto);
-    return ResponseFormatter::singleItemResponse(new SurveyResource($survey));
+    return ResponseFormatter::dataResponse(new SurveyResource($survey));
   }
 
   /**
@@ -73,7 +73,7 @@ class SurveyService
   public function update(SurveyDTO $dto, int $id): JsonResponse
   {
     $survey = (new UpdateAction())->execute($dto, $id);
-    return ResponseFormatter::singleItemResponse(new SurveyResource($survey));
+    return ResponseFormatter::dataResponse(new SurveyResource($survey));
   }
 
   /**
@@ -86,6 +86,6 @@ class SurveyService
     $survey = Survey::findOrFail($id);
     if ($survey) $survey->delete();
 
-    return ResponseFormatter::singleItemResponse(data: null);
+    return ResponseFormatter::dataResponse(data: null);
   }
 }

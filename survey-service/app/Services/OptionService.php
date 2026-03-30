@@ -36,7 +36,7 @@ class OptionService
   public function getDetails(int $id): JsonResponse
   {
     $option = Option::findOrFail($id);
-    return ResponseFormatter::singleItemResponse(new OptionResource($option));
+    return ResponseFormatter::dataResponse(new OptionResource($option));
   }
 
   /**
@@ -47,7 +47,7 @@ class OptionService
   public function create(OptionDTO $dto): JsonResponse
   {
     $action  = (new CreateAction)->execute($dto);
-    return ResponseFormatter::singleItemResponse(new OptionResource($action));
+    return ResponseFormatter::dataResponse(new OptionResource($action));
   }
 
   /**
@@ -58,7 +58,7 @@ class OptionService
   public function update(OptionDTO $data): JsonResponse
   {
     $action = (new UpdateAction)->execute($data);
-    return ResponseFormatter::singleItemResponse(new OptionResource($action));
+    return ResponseFormatter::dataResponse(new OptionResource($action));
   }
 
   /**
@@ -71,7 +71,7 @@ class OptionService
     if ($option = Option::findOrFail($id)) {
       $option->delete();
     }
-    return ResponseFormatter::singleItemResponse(data: null);
+    return ResponseFormatter::dataResponse(data: null);
   }
 
   /**
@@ -81,6 +81,6 @@ class OptionService
   public function getTypes(): JsonResponse
   {
     $types = collect(OptionType::cases())->map(fn($type) => $type->value);
-    return ResponseFormatter::singleItemResponse($types);
+    return ResponseFormatter::dataResponse($types);
   }
 }

@@ -35,7 +35,7 @@ class SectionService
   public function getDetails(int $id): JsonResponse
   {
     $section = Section::with(['questions'])->findOrFail($id);
-    return ResponseFormatter::singleItemResponse(new SectionResource($section));
+    return ResponseFormatter::dataResponse(new SectionResource($section));
   }
 
   /**
@@ -46,7 +46,7 @@ class SectionService
   public function create(SectionDTO $dto): JsonResponse
   {
     $action  = (new CreateAction)->execute($dto);
-    return ResponseFormatter::singleItemResponse(new SectionResource($action));
+    return ResponseFormatter::dataResponse(new SectionResource($action));
   }
 
   /**
@@ -57,7 +57,7 @@ class SectionService
   public function update(SectionDTO $data): JsonResponse
   {
     $action = (new UpdateAction)->execute($data);
-    return ResponseFormatter::singleItemResponse(new SectionResource($action));
+    return ResponseFormatter::dataResponse(new SectionResource($action));
   }
 
   /**
@@ -73,7 +73,7 @@ class SectionService
       $section->delete();
     }
 
-    return ResponseFormatter::singleItemResponse(data: null);
+    return ResponseFormatter::dataResponse(data: null);
   }
 
   /**
