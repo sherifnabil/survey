@@ -18,6 +18,8 @@ class OptionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'value' => $this->value,
+            'type' => $this->type,
+            'survey_id' => $this->when(str_contains($request->path(), 'options'), $this->survey_id),
         ];
     }
 }
