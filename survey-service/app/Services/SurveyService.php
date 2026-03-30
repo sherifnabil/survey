@@ -83,7 +83,7 @@ class SurveyService
    */
   public function delete(int $id): JsonResponse
   {
-    $survey = Survey::find($id);
+    $survey = Survey::findOrFail($id);
     if ($survey) $survey->delete();
 
     return ResponseFormatter::singleItemResponse(data: null);
