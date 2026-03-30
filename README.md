@@ -78,9 +78,10 @@ cd survey-service
 cp .env.example .env
 composer install
 php artisan key:generate
-
+```
 Configure your database in .env:
 
+```
 DB_CONNECTION=pgsql // recommended  postgres
 DB_HOST=127.0.0.1
 DB_PORT=5432
