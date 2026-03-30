@@ -40,4 +40,13 @@ readonly class SurveyDTO implements DTO
       'options' => $this->options,
     ];
   }
+
+  public function toArrayExceptColumns(array $columnsToExclude): array
+  {
+    $array = $this->toArray();
+    foreach ($columnsToExclude as $column) {
+      unset($array[$column]);
+    }
+    return $array;
+  }
 }
