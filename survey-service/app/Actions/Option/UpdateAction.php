@@ -9,7 +9,7 @@ use App\Models\Option;
 
 class UpdateAction implements Action
 {
-  public function execute(DTO $dto): ?Option
+  public function execute(DTO $dto): Option
   {
     /** @var OptionDTO $dto */
     if ($option = Option::findOrFail($dto->id)) {

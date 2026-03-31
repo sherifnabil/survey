@@ -12,7 +12,6 @@ class CreateAction implements Action
   public function execute(DTO $dto): Option
   {
     /** @var OptionDTO $dto */
-    $option = Option::create($dto->toArray());
-    return $option;
+    return Option::create($dto->toArray());
   }
 }

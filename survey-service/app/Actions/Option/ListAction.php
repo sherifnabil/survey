@@ -16,16 +16,15 @@ class ListAction implements Action
      * The query is built using the filters and columns specified in the DTO. 
      * The data is then paginated using page-based pagination,
      */
-    $meta = $dto->toArray()['meta'];
-    $perPage = $meta['perPage']  ?? config('response-settings.per_page');
+    $perPage = $dto->meta['perPage']  ?? config('response-settings.per_page');
 
     $paginator = Option::query()
-      ->filters($dto->toArray()['filters'])
+      ->filters($dto->filters)
       ->select($dto->columns);
 
     if ($perPage == -1) $perPage = $paginator->count();
 
-    $paginator = $paginator->paginate($perPage, $meta['page']);
+    $paginator = $paginator->paginate($perPage, $dto->meta['page']);
 
     return [
       'paginator' => $paginator,
