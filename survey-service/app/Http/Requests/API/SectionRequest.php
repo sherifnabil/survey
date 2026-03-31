@@ -27,6 +27,7 @@ class SectionRequest extends FormRequest
             'order' => ['nullable', 'integer'],
             'questions' => ['nullable', 'array'],
             'questions.*.title' => ['required', 'string'],
+            'questions.*.id' => ['sometimes', 'nullable', 'integer', 'exists:questions,id'],
         ];
     }
 }

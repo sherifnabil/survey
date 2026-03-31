@@ -29,15 +29,18 @@ class SurveyRequest extends FormRequest
 
             // survey sections
             'sections' => ['nullable', 'array'],
+            'sections.*.id' => ['sometimes', 'nullable', 'integer', 'exists:sections,id'],
             'sections.*.name' => ['required', 'string', 'max:255'],
 
             // section questions
             'sections.*.questions' => ['nullable', 'array'],
+            'sections.*.questions.*.id' => ['sometimes', 'nullable', 'integer', 'exists:questions,id'],
             'sections.*.questions.*.title' => ['required', 'string'],
 
             // survey options
             'options' => ['nullable', 'array'],
             'options.*.name' => ['required', 'string', 'max:255'],
+            'options.*.id' => ['sometimes', 'nullable', 'integer', 'exists:options,id'],
             'options.*.value' => ['required', 'integer', 'distinct'],
             'options.*.type' => ['required', 'in:' . OptionType::valuesAsString()],
 
