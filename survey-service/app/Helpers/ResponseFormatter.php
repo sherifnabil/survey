@@ -15,16 +15,19 @@ class ResponseFormatter
    * Format a paginated response with metadata for pagination
    * @param JsonResource $data The data to be returned in the response
    * @param LengthAwarePaginator $paginationObject The paginator object containing pagination metadata
-   * @return array The formatted response with data and pagination metadata
+   * @return JsonResponse The formatted response with data and pagination metadata
    */
-  public static function paginationResponse(JsonResource $data, LengthAwarePaginator $paginator): array
+  public static function paginationResponse(JsonResource $data, LengthAwarePaginator $paginator): JsonResponse
   {
-    return [
-      'data' => $data,
-      'pagination' => static::paginationResponseMeta($paginator),
-      'status' => 'success',
-      'code' => Response::HTTP_OK,
-    ];
+    return new JsonResponse(
+      data: [
+        'data' => $data,
+        'pagination' => static::paginationResponseMeta($paginator),
+        'status' => 'success',
+        'code' => Response::HTTP_OK,
+      ],
+      status: Response::HTTP_OK,
+    );
   }
 
   /**
@@ -46,16 +49,19 @@ class ResponseFormatter
    * Format a cursor paginated response with metadata for pagination
    * @param JsonResource $data The data to be returned in the response
    * @param CursorPaginator $paginator The paginator object containing pagination metadata
-   * @return array The formatted response with data and pagination metadata
+   * @return JsonResponse The formatted response with data and pagination metadata
    */
-  public static function cursorPaginationResponse(JsonResource|array $data, CursorPaginator $paginator, int $total = 0): array
+  public static function cursorPaginationResponse(JsonResource|array $data, CursorPaginator $paginator, int $total = 0): JsonResponse
   {
-    return [
-      'data' => $data,
-      'pagination' => static::cursorPaginationMeta($paginator, $total),
-      'status' => 'success',
-      'code' => Response::HTTP_OK,
-    ];
+    return new JsonResponse(
+      data: [
+        'data' => $data,
+        'pagination' => static::cursorPaginationMeta($paginator, $total),
+        'status' => 'success',
+        'code' => Response::HTTP_OK,
+      ],
+      status: Response::HTTP_OK
+    );
   }
 
   /**
