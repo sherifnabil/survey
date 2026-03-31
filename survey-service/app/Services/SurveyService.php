@@ -7,85 +7,70 @@ use App\Actions\Survey\ListAction;
 use App\Actions\Survey\UpdateAction;
 use App\DTOs\Survey\SurveyDTO;
 use App\DTOs\Survey\SurveyFilterDTO;
-use App\Helpers\ResponseFormatter;
-use App\Http\Resources\SurveyResource;
 use App\Models\Survey;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Collection;
 
 class SurveyService
 {
   /**
    * Get a paginated list of surveys with optional filters and selected columns
+   * @param SurveyFilterDTO $dto The data transfer object containing filters, pagination, and column selection information
+   * @return array An array containing the paginated list of surveys and total count
    */
-  public function list(SurveyFilterDTO $dto): Collection|array
+  public function list(SurveyFilterDTO $dto): array
   {
-    $action = (new ListAction())->execute($dto);
-    return ResponseFormatter::cursorPaginationResponse(
-      SurveyResource::collection($action['data']->items()),
-      $action['data'],
-      $action['total'],
-    );
+    return (new ListAction())->execute($dto);;
   }
 
   /**
    * Get a minimal list of surveys (id and name only) for select options
+   * @param SurveyFilterDTO $dto The data transfer object containing filters and pagination information
+   * @return array An array containing the paginated list of surveys
    */
-  public function minimalList(SurveyFilterDTO $dto): Collection|array
+  public function minimalList(SurveyFilterDTO $dto): array
   {
-    $action = (new ListAction())->execute($dto);
-    return ResponseFormatter::cursorPaginationResponse(
-      $action['data']->items(),
-      $action['data'],
-      $action['total']
-    );
+    return (new ListAction())->execute($dto);
   }
 
   /**
    * Get detailed information about a specific survey, including its sections and questions
    * $var int $id The ID of the survey to retrieve details for
    * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the survey with the specified ID is not found
-   * @return JsonResponse
+   * @return Survey
    */
-  public function getDetails(int $id): JsonResponse
+  public function getDetails(int $id): Survey
   {
-    $survey = Survey::with(['sections.questions', 'options'])->findOrFail($id);
-    return ResponseFormatter::dataResponse(new SurveyResource($survey));
+    return Survey::with(['sections.questions', 'options'])->findOrFail($id);
   }
 
   /**
    * Create a new survey along with its sections and options
    * @param SurveyDTO $dto The data transfer object
-   * @return JsonResponse
+   * @return Survey
    */
-  public function create(SurveyDTO $dto): JsonResponse
+  public function create(SurveyDTO $dto): Survey
   {
-    $survey = (new CreateAction())->execute($dto);
-    return ResponseFormatter::dataResponse(new SurveyResource($survey));
+    return (new CreateAction())->execute($dto);
   }
 
   /**
    * Update an existing survey along with its sections and options
    * @param SurveyDTO $dto The data transfer object containing the updated survey information
    * @param int $id The ID of the survey to update
-   * @return JsonResponse
+   * @return Survey
    */
-  public function update(SurveyDTO $dto, int $id): JsonResponse
+  public function update(SurveyDTO $dto): Survey
   {
-    $survey = (new UpdateAction())->execute($dto, $id);
-    return ResponseFormatter::dataResponse(new SurveyResource($survey));
+    return (new UpdateAction())->execute($dto);
   }
 
   /**
    * Delete a survey by its ID
    * @param int $id The ID of the survey to delete
-   * @return JsonResponse
+   * @return bool
    */
-  public function delete(int $id): JsonResponse
+  public function deleteById(int $id): bool
   {
     $survey = Survey::findOrFail($id);
-    if ($survey) $survey->delete();
-
-    return ResponseFormatter::dataResponse(data: null);
+    return $survey->delete();
   }
 }

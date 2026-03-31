@@ -4,11 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\DTOs\Survey\SurveyDTO;
 use App\DTOs\Survey\SurveyFilterDTO;
+use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\API\SurveyRequest;
+use App\Http\Resources\SurveyResource;
 use App\Services\SurveyService;
 use Illuminate\Http\JsonResponse;
-use Ramsey\Collection\Collection;
 use Symfony\Component\HttpFoundation\Request;
 
 class SurveyController extends Controller
@@ -18,18 +19,28 @@ class SurveyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request): Collection|array
+    public function index(Request $request): JsonResponse
     {
-        return $this->service->list(SurveyFilterDTO::fromRequest($request->all()));
+        $action = $this->service->list(SurveyFilterDTO::fromArray($request->all()));
+        return ResponseFormatter::cursorPaginationResponse(
+            SurveyResource::collection($action['data']),
+            $action['data'],
+            $action['total'],
+        );
     }
 
     /**
      * Get a minimal list of surveys (id and name only) for select options
      */
-    public function minimalList(Request $request): Collection|array
+    public function minimalList(Request $request): JsonResponse
     {
         $request->merge(['active' => true]); // Only return active surveys);
-        return $this->service->minimalList(SurveyFilterDTO::fromRequest($request->all(), columns: ['id', 'name']));
+        $action = $this->service->minimalList(SurveyFilterDTO::fromArray($request->all(), columns: ['id', 'name']));
+        return ResponseFormatter::cursorPaginationResponse(
+            $action['data']->items(),
+            $action['data'],
+            $action['total']
+        );
     }
 
     /**
@@ -37,8 +48,9 @@ class SurveyController extends Controller
      */
     public function store(SurveyRequest $request): JsonResponse
     {
-        $dto = SurveyDTO::fromRequest($request->validated());
-        return $this->service->create($dto);
+        $dto = SurveyDTO::fromArray($request->validated());
+        $survey = $this->service->create($dto);
+        return ResponseFormatter::dataResponse(new SurveyResource($survey));
     }
 
     /**
@@ -46,7 +58,8 @@ class SurveyController extends Controller
      */
     public function show(int $id): JsonResponse
     {
-        return $this->service->getDetails($id);
+        $survey = $this->service->getDetails($id);
+        return ResponseFormatter::dataResponse(new SurveyResource($survey));
     }
 
     /**
@@ -56,15 +69,17 @@ class SurveyController extends Controller
     {
         $data = $request->validated();
         $data['id'] = $id; // Ensure the ID is included in the DTO
-        $dto = SurveyDTO::fromRequest($data);
-        return $this->service->update($dto, $id);
+        $dto = SurveyDTO::fromArray($data);
+        $survey = $this->service->update($dto, $id);
+        return ResponseFormatter::dataResponse(new SurveyResource($survey));
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(int $id)
+    public function destroy(int $id): JsonResponse
     {
-        return $this->service->delete($id);
+        $this->service->deleteById($id);
+        return ResponseFormatter::dataResponse(data: null);
     }
 }

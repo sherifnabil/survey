@@ -7,73 +7,66 @@ use App\Actions\Section\ListAction;
 use App\Actions\Section\UpdateAction;
 use App\DTOs\Section\SectionDTO;
 use App\DTOs\Section\SectionFilterDTO;
-use App\Helpers\ResponseFormatter;
-use App\Http\Resources\SectionResource;
 use App\Models\Section;
-use Illuminate\Http\JsonResponse;
-use Ramsey\Collection\Collection;
 
 class SectionService
 {
   /**
    * Get a paginated list of sections with optional filters and selected columns
    * @param SectionFilterDTO $dto The data transfer object containing filters, pagination, and column selection information
-   * @return JsonResponse The formatted paginated response containing the list of sections and pagination metadata
+   * @return array The formatted paginated response containing the list of sections and pagination metadata
    */
-  public function list(SectionFilterDTO $dto): Collection|array
+  public function list(SectionFilterDTO $dto): array
   {
-    $action = (new ListAction)->execute($dto);
-    return ResponseFormatter::paginationResponse(SectionResource::collection($action['data']), $action['paginator']);
+    return (new ListAction)->execute($dto);
   }
 
   /**
    * Get detailed information about a specific section, including its questions
    * $var int $id The ID of the section to retrieve details for
    * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the section with the specified ID is not found
-   * @return JsonResponse
+   * @return Section
    */
-  public function getDetails(int $id): JsonResponse
+  public function getDetails(int $id): Section
   {
-    $section = Section::with(['questions'])->findOrFail($id);
-    return ResponseFormatter::dataResponse(new SectionResource($section));
+    return Section::with(['questions'])->findOrFail($id);
   }
 
   /**
    * Create a new section with the provided data
    * @param SectionDTO $data The data to create the section with
-   * @return JsonResponse
+   * @return Section
    */
-  public function create(SectionDTO $dto): JsonResponse
+  public function create(SectionDTO $dto): Section
   {
-    $action  = (new CreateAction)->execute($dto);
-    return ResponseFormatter::dataResponse(new SectionResource($action));
+    return (new CreateAction)->execute($dto);
   }
 
   /**
    * Update an existing section by its ID
    * @param SectionDTO $data The data to update the section with
-   * @return JsonResponse
+   * @return Section
    */
-  public function update(SectionDTO $data): JsonResponse
+  public function update(SectionDTO $data): Section
   {
-    $action = (new UpdateAction)->execute($data);
-    return ResponseFormatter::dataResponse(new SectionResource($action));
+    return (new UpdateAction)->execute($data);
   }
 
   /**
    * Delete a section by its ID
    * @param int $id The ID of the section to delete
-   * @return JsonResponse
+   * @return bool Returns true if the section was successfully deleted, false otherwise
+   * @throws \Illuminate\Database\Eloquent\ModelNotFoundException If the section with the specified ID is not found
    */
-  public function delete(int $id): JsonResponse
+  public function delete(int $id): bool
   {
 
     if ($section = Section::findOrFail($id)) {
       $section->questions()->delete(); // Delete related questions first to maintain referential integrity
       $section->delete();
+      return true;
     }
-
-    return ResponseFormatter::dataResponse(data: null);
+    return false;
   }
 
   /**
