@@ -9,12 +9,12 @@ readonly class OptionDTO implements DTO
   public function __construct(
     public ?int $id = null,
     public string $name,
-    public string|null $type,
-    public int|null $value = null,
-    public int|null $survey_id = null,
+    public ?string $type,
+    public ?int $value = null,
+    public ?int $survey_id = null,
   ) {}
 
-  public static function fromRequest(array $data): self
+  public static function fromArray(array $data): self
   {
     return new self(
       id: $data['id'] ?? null,

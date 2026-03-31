@@ -12,7 +12,7 @@ readonly class SurveyFilterDTO implements DTO
     public array $columns = ['*'],
   ) {}
 
-  public static function fromRequest(array $data, array $columns = ['*']): self
+  public static function fromArray(array $data, array $columns = ['*']): self
   {
     $activeStatus = (!isset($data['active']) || strlen($data['active']) == 0) ? null : filter_var($data['active'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
 
@@ -38,14 +38,5 @@ readonly class SurveyFilterDTO implements DTO
       'meta' => $this->meta,
       'columns' => $this->columns,
     ];
-  }
-
-  public function toArrayExceptColumns(array $columnsToExclude): array
-  {
-    $array = $this->toArray();
-    foreach ($columnsToExclude as $column) {
-      unset($array[$column]);
-    }
-    return $array;
   }
 }

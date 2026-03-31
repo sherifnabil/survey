@@ -3,6 +3,8 @@
 namespace App\DTOs\Survey;
 
 use App\DTOs\DTO;
+use App\DTOs\Option\OptionDTO;
+use App\DTOs\Section\SectionDTO;
 
 readonly class SurveyDTO implements DTO
 {
@@ -11,11 +13,14 @@ readonly class SurveyDTO implements DTO
     public string $name,
     public string $description,
     public bool $active = true,
+
+    /** @var SectionDTO[] */
     public array $sections = [],
+    /** @var OptionDTO[] */
     public array $options = [],
   ) {}
 
-  public static function fromRequest(array $data): self
+  public static function fromArray(array $data): self
   {
     return new self(
       id: $data['id'] ?? null,
@@ -23,8 +28,15 @@ readonly class SurveyDTO implements DTO
       description: $data['description'],
       active: $data['active'] ?? true,
 
-      sections: $data['sections'] ?? [],
-      options: $data['options'] ?? [],
+      // relationships
+      sections: array_map(
+        fn($section) => SectionDTO::fromArray($section),
+        $data['sections'] ?? []
+      ),
+      options: array_map(
+        fn($option) => OptionDTO::fromArray($option),
+        $data['options'] ?? []
+      ),
     );
   }
 
