@@ -12,9 +12,22 @@ class CreateAction implements Action
   public function execute(DTO $dto): Section
   {
     /** @var SectionDTO $dto */
-    $section = Section::create($dto->toArray());
-    $questions = collect($dto->questions)->map(fn($question, $index) => array_merge($question, ['order' => $index + 1]))->toArray();
-    $section->questions()->createMany($questions);
+    $section = Section::create([
+      'name' => $dto->name,
+      'order' => $dto->order,
+      'survey_id' => $dto->survey_id,
+    ]);
+    $this->createQuestions($dto->questions, $section);
     return $section;
+  }
+
+  private function createQuestions(array $questions, Section $section): void
+  {
+    foreach ($questions as $index => $questionDTO) {
+      $section->questions()->create([
+        'title' => $questionDTO->title,
+        'order' => $questionDTO->order ?? ($index + 1),
+      ]);
+    }
   }
 }

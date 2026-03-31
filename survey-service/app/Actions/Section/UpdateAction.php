@@ -5,22 +5,43 @@ namespace App\Actions\Section;
 use App\Actions\Action;
 use App\DTOs\DTO;
 use App\DTOs\Section\SectionDTO;
+use App\Models\Concrens\SyncRelation;
 use App\Models\Section;
 
 class UpdateAction implements Action
 {
-  public function execute(DTO $dto): ?Section
+  public function execute(DTO $dto): Section
   {
     /** @var SectionDTO $dto */
     if ($section = Section::findOrFail($dto->id)) {
-      $section->update($dto->toArrayExceptColumns(['survey_id'])); // Prevent updating survey_id through this action
+      // Prevent updating survey_id and order through this action
+      $section->update($dto->toArrayExceptColumns(['survey_id', 'order']));
 
-      $section->questions()->delete(); // Delete existing questions
-      // Create new questions with proper ordering
-      $questions = collect($dto->questions)->map(fn($question, $index) => array_merge($question, ['order' => $index + 1]))->toArray();
-      $section->questions()->createMany($questions);
+      $this->syncQuestions($section, $dto->questions);
     }
 
     return $section->refresh();
+  }
+
+  private function syncQuestions(Section $section, $newQuestions): void
+  {
+    $order = $section->questions()->get('order')->max('order') + 1;
+
+    SyncRelation::sync(
+      relation: $section->questions(),
+      items: $newQuestions,
+      updateCallback: function ($question, $dto) use (&$order) {
+        $question->update([
+          'title' => $dto->title,
+          'order' => $order++,
+        ]);
+      },
+      createCallback: function ($relation, $dto) use (&$order) {
+        return $relation->create([
+          'title' => $dto->title,
+          'order' => $order++,
+        ]);
+      }
+    );
   }
 }
