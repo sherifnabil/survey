@@ -4,6 +4,8 @@ namespace App\Actions\Survey;
 
 use App\Actions\Action;
 use App\DTOs\DTO;
+use App\DTOs\Survey\SurveyDTO;
+use App\Models\Section;
 use App\Models\Survey;
 use Illuminate\Support\Facades\DB;
 
@@ -11,32 +13,50 @@ class CreateAction implements Action
 {
   public function execute(DTO $dto): Survey
   {
-    // use database transaction to ensure data integrity.
-    $survey = DB::transaction(function () use ($dto) {
+    /** @var SurveyDTO $dto */
+    return DB::transaction(function () use ($dto) { // use database transaction to ensure data integrity.
       $survey = Survey::create([
         'name' => $dto->name,
         'description' => $dto->description,
         'active' => $dto->active,
       ]);
 
-      // Create sections and questions
-      foreach ($dto->sections as $index => $sectionData) {
-        $section = $survey->sections()->create([
-          'name' => $sectionData['name'] ?? '',
-          'order' => $index + 1, // Ensure order starts from 1 and is sequential
-        ]);
+      $this->createSectios($dto->sections, $survey);
+      $this->createOptions($dto->options, $survey);
 
-        // Create questions for the section with proper ordering
-        $questions = collect($sectionData['questions'] ?? [])->map(
-          fn($question, $index) => array_merge($question, ['order' => $index + 1])
-        )->toArray();
-        $section->questions()->createMany($questions);
-      }
-
-      // Create survey options
-      $survey->options()->createMany($dto->options);
       return $survey;
     });
-    return $survey;
+  }
+
+  private function createSectios(array $sections, Survey $survey): void
+  {
+    foreach ($sections as $index => $sectionDTO) {
+      $section = $survey->sections()->create([
+        'name' => $sectionDTO->name,
+        'order' => $sectionDTO->order ?? ($index + 1),
+      ]);
+      $this->createQuestions($sectionDTO->questions, $section);
+    }
+  }
+
+  private function createQuestions(array $questions, Section $section): void
+  {
+    foreach ($questions as $index => $questionDTO) {
+      $section->questions()->create([
+        'title' => $questionDTO->title,
+        'order' => $questionDTO->order ?? ($index + 1),
+      ]);
+    }
+  }
+
+  private function createOptions(array $options, Survey $survey): void
+  {
+    foreach ($options as $optionDTO) {
+      $survey->options()->create([
+        'name' => $optionDTO->name,
+        'value' => $optionDTO->value,
+        'type' => $optionDTO->type,
+      ]);
+    }
   }
 }

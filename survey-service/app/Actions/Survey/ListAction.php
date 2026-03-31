@@ -20,13 +20,13 @@ class ListAction implements Action
      *  and both the paginated data and total count are returned in the response. 
      */
     $query = Survey::query()
-      ->filters($dto->toArray()['filters'])
+      ->filters($dto->filters)
       ->select($dto->columns);
 
     $total = $query->count();
 
     $data = $query
-      ->cursorPaginate($dto->toArray()['meta']['perPage']);
+      ->cursorPaginate($dto->meta['perPage']);
 
     return [
       'data' => $data,
