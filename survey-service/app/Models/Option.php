@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\OptionType;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -32,7 +33,7 @@ class Option extends Model
         return $this->hasMany(Answer::class);
     }
 
-    public function scopeFilters($query, array $filters): void
+    public function scopeFilters(Builder $query, array $filters): void
     {
         $surveyId = $filters['survey_id'] ?? null;
         $name = $filters['name'] ?? null;
