@@ -17,16 +17,16 @@ class ResponseFormatter
    * @param LengthAwarePaginator $paginationObject The paginator object containing pagination metadata
    * @return JsonResponse The formatted response with data and pagination metadata
    */
-  public static function paginationResponse(JsonResource $data, LengthAwarePaginator $paginator): JsonResponse
+  public static function paginationResponse(JsonResource $data, LengthAwarePaginator $paginator, int $status = Response::HTTP_OK): JsonResponse
   {
     return new JsonResponse(
       data: [
         'data' => $data,
         'pagination' => static::paginationResponseMeta($paginator),
         'status' => 'success',
-        'code' => Response::HTTP_OK,
+        'code' => $status,
       ],
-      status: Response::HTTP_OK,
+      status: $status,
     );
   }
 
@@ -51,16 +51,16 @@ class ResponseFormatter
    * @param CursorPaginator $paginator The paginator object containing pagination metadata
    * @return JsonResponse The formatted response with data and pagination metadata
    */
-  public static function cursorPaginationResponse(JsonResource|array $data, CursorPaginator $paginator, int $total = 0): JsonResponse
+  public static function cursorPaginationResponse(JsonResource|array $data, CursorPaginator $paginator, int $total = 0, int $status = Response::HTTP_OK): JsonResponse
   {
     return new JsonResponse(
       data: [
         'data' => $data,
         'pagination' => static::cursorPaginationMeta($paginator, $total),
         'status' => 'success',
-        'code' => Response::HTTP_OK,
+        'code' => $status,
       ],
-      status: Response::HTTP_OK
+      status: $status
     );
   }
 
@@ -105,15 +105,15 @@ class ResponseFormatter
    * @param JsonResource $data The data to be returned in the response
    * @return JsonResponse The formatted response containing the single item data
    */
-  public static function dataResponse(JsonResource|Collection|null $data): JsonResponse
+  public static function dataResponse(JsonResource|Collection|null $data, int $status = Response::HTTP_OK): JsonResponse
   {
     return new JsonResponse(
       data: [
         'data' => $data,
         'status' => 'success',
-        'code' => Response::HTTP_OK,
+        'code' => $status,
       ],
-      status: Response::HTTP_OK,
+      status: $status,
     );
   }
 }
