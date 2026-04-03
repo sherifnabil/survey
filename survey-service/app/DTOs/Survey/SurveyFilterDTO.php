@@ -3,9 +3,12 @@
 namespace App\DTOs\Survey;
 
 use App\DTOs\DTO;
+use App\Models\Concrens\HasHelpersTrait;
 
 readonly class SurveyFilterDTO implements DTO
 {
+  use HasHelpersTrait;
+
   public function __construct(
     public array $filters = [],
     public array $meta = [],
