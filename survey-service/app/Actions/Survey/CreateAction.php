@@ -21,14 +21,14 @@ class CreateAction implements Action
         'active' => $dto->active,
       ]);
 
-      $this->createSectios($dto->sections, $survey);
+      $this->createSections($dto->sections, $survey);
       $this->createOptions($dto->options, $survey);
 
       return $survey;
     });
   }
 
-  private function createSectios(array $sections, Survey $survey): void
+  private function createSections(array $sections, Survey $survey): void
   {
     foreach ($sections as $index => $sectionDTO) {
       $section = $survey->sections()->create([
