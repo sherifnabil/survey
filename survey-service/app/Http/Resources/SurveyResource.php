@@ -17,8 +17,8 @@ class SurveyResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'description' => $this->description,
-            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+            'description' => $this->when($this->description, fn() => $this->description),
+            'created_at' => $this->when(!is_null($this->created_at), fn() => $this->created_at->format('Y-m-d H:i:s')),
             'sections' => SectionResource::collection($this->whenLoaded('sections')),
             'options' => OptionResource::collection($this->whenLoaded('options')),
         ];
