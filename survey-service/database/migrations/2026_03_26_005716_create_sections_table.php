@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('order');
-            $table->foreignId('survey_id');
+            $table->foreignId('survey_id')->constrained();
             $table->unique(['order', 'survey_id']);
             $table->timestamps();
         });
