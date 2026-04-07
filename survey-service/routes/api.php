@@ -5,13 +5,18 @@ use Illuminate\Support\Facades\Route;
 Route::group(['prefix' => 'v1'], function () {
     /** Public Auth routes */
     Route::post('register', [\App\Http\Controllers\API\AuthController::class, 'register']);
-    Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login']);
+    Route::post('login', [\App\Http\Controllers\API\AuthController::class, 'login'])->name('login');
 
     Route::group(['middleware' => 'auth:sanctum'], function () {
         Route::post('logout', [\App\Http\Controllers\API\AuthController::class, 'logout']);
+        Route::get('me', [\App\Http\Controllers\API\AuthController::class, 'me'])->name('me');
         // Surveys
         Route::get('surveys/minimal', [\App\Http\Controllers\API\SurveyController::class, 'minimalList']); // minimal list as select options
         Route::apiResource('surveys', \App\Http\Controllers\API\SurveyController::class);
+
+        // Responses
+        Route::get('responses/create/{survey}', [\App\Http\Controllers\API\ResponseController::class, 'blankResponseBySurvey']);
+        Route::apiResource('responses', \App\Http\Controllers\API\ResponseController::class);
 
         // Users
         Route::apiResource('users', \App\Http\Controllers\API\UserController::class);
